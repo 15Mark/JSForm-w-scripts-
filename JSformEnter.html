@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: #ffffff;
+      padding: 40px 50px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 440px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    .full-name-display {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    .full-name-display:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .full-name-wrapper {
+      position: relative;
+    }
+
+    .full-name-display {
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%) rotate(0deg);
+      font-size: 0.9em;
+      color: #555;
+      pointer-events: none;
+      transition: transform 0.3s ease;
+    }
+
+    .arrow.open {
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .name-fields {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+    }
+
+    .name-fields.show {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    .name-fields input {
+      margin-bottom: 10px;
+    }
+
+    .hint {
+      font-size: 0.85em;
+      color: #dc3545;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .hint.show {
+      display: block;
+    }
+
+    .eye-icon {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      font-size: 1.1em;
+      color: #666;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Create an Account</h2>
+    <form id="registrationForm">
+
+    
+      <div class="form-group">
+        <label for="fullNameDisplay">Full Name</label>
+        <div class="full-name-wrapper">
+          <input 
+            type="text" 
+            id="fullNameDisplay" 
+            class="full-name-display" 
+            readonly 
+            onclick="toggleNameFields()" 
+            placeholder="Name"
+          >
+          <span id="arrowIcon" class="arrow">&#9660;</span>
+        </div>
+
+
+        <div class="name-fields" id="nameFields">
+          <input type="text" id="firstName" placeholder="First Name" required>
+          <input type="text" id="middleName" placeholder="Middle Name">
+          <input type="text" id="lastName" placeholder="Last Name" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="e.g. john@example.com" required>
+        <div class="hint" id="emailHint"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Choose a username" minlength="5" maxlength="20" required>
+        <div class="hint" id="usernameHint">Username must be 5–20 characters and not taken.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div style="position: relative;">
+          <input type="password" id="password" placeholder="Enter your password" minlength="5" maxlength="20" required>
+          <span class="eye-icon" id="eyeIcon">👁️</span>
+        </div>
+        <div class="hint" id="passwordHint">
+          Password must be 5–20 characters and include at least one special character (e.g. @, #, !).
+        </div>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <script>
+    // This script utilizes ES6+ features including 'let/const', arrow functions, and destructuring.
+    // It also demonstrates event handling (e.g., 'input' events), DOM manipulation (e.g., toggleClass, changing element properties), and asynchronous JavaScript (e.g., using 'async/await' for simulating username availability check).
+  
+    const nameFields = document.getElementById("nameFields");
+    const fullNameDisplay = document.getElementById("fullNameDisplay");
+    const arrowIcon = document.getElementById("arrowIcon");
+    const username = document.getElementById("username");
+    const usernameHint = document.getElementById("usernameHint");
+    const password = document.getElementById("password");
+    const passwordHint = document.getElementById("passwordHint");
+    const eyeIcon = document.getElementById("eyeIcon");
+    const email = document.getElementById("email");
+  
+    // Toggle full name input fields visibility when clicking on the full name display input
+    const toggleNameFields = () => {
+      nameFields.classList.toggle("show");
+      arrowIcon.classList.toggle("open");
+    };
+  
+    // Update the full name display field based on first, middle, and last names
+    const updateFullNameDisplay = () => {
+      const first = document.getElementById("firstName").value.trim();
+      const middle = document.getElementById("middleName").value.trim();
+      const last = document.getElementById("lastName").value.trim();
+  
+      let fullName = first;
+      if (middle) fullName += ` ${middle.charAt(0)}.`;
+      if (last) fullName += ` ${last}`;
+  
+      fullNameDisplay.value = fullName || '';
+    };
+  
+    // Event listener for handling input validation and updating the full name display
+    ['firstName', 'middleName', 'lastName'].forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener("input", () => {
+        const valid = /^[A-Za-z\s]*$/.test(input.value); // Letters and spaces allowed
+        if (!valid) {
+          input.setCustomValidity('Only letters and spaces are allowed.');
+          input.reportValidity();
+        } else {
+          input.setCustomValidity('');
+        }
+        updateFullNameDisplay();
+      });
+    });
+  
+    // Asynchronous function to check if the username is available
+    const checkUsernameAvailability = async (username) => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const takenNames = ['admin', 'user', 'test'];
+          resolve(!takenNames.includes(username.toLowerCase()));
+        }, 500); 
+      });
+    };
+  
+    // Username input event listener for checking validity and availability
+    username.addEventListener("input", async () => {
+      const value = username.value.trim();
+      const isValidLength = value.length >= 5 && value.length <= 20;
+  
+      if (!isValidLength) {
+        usernameHint.textContent = "Username must be between 5 and 20 characters.";
+        usernameHint.classList.add("show");
+      } else if (!await checkUsernameAvailability(value)) {
+        usernameHint.textContent = "This username is already taken.";
+        usernameHint.classList.add("show");
+      } else {
+        usernameHint.classList.remove("show");
+      }
+    });
+  
+    // Password input event listener for checking validity (special character and length)
+    password.addEventListener("input", () => {
+      const value = password.value;
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      const isValidLength = value.length >= 5 && value.length <= 20;
+  
+      if (!hasSpecialChar || !isValidLength) {
+        passwordHint.classList.add("show");
+      } else {
+        passwordHint.classList.remove("show");
+      }
+    });
+  
+    // Email input event listener for validating email format
+    email.addEventListener("input", () => {
+      const emailValue = email.value.trim();
+      const isValidEmail = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(emailValue);
+      const emailHint = document.getElementById("emailHint");
+  
+      if (!isValidEmail) {
+        emailHint.textContent = "Please enter a valid email address.";
+        emailHint.classList.add("show");
+      } else {
+        emailHint.classList.remove("show");
+      }
+    });
+  
+    // Toggle password visibility when eye icon is clicked
+    eyeIcon.addEventListener("click", () => {
+      if (password.type === "password") {
+        password.type = "text";
+        eyeIcon.textContent = "🙈";
+      } else {
+        password.type = "password";
+        eyeIcon.textContent = "👁️";
+      }
+    });
+  
+    // Form submission event listener
+    document.getElementById("registrationForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+  
+      const usernameValue = username.value.trim();
+      const passwordValue = password.value;
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(passwordValue);
+      const isPasswordValidLength = passwordValue.length >= 5 && passwordValue.length <= 20;
+      const isUsernameValidLength = usernameValue.length >= 5 && usernameValue.length <= 20;
+  
+      if (!isUsernameValidLength) {
+        usernameHint.textContent = "Username must be between 5 and 20 characters.";
+        usernameHint.classList.add("show");
+        return;
+      }
+  
+      if (!hasSpecialChar || !isPasswordValidLength) {
+        passwordHint.classList.add("show");
+        return;
+      }
+  
+      const fullName = fullNameDisplay.value;
+      localStorage.setItem("fullName", fullName);
+  
+      window.location.href = `JSformWelcome.html?user=${encodeURIComponent(usernameValue)}`;
+    });
+  </script>
+  
+</body>
+</html>
